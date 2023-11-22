@@ -1,6 +1,6 @@
 package com.sparta.newsfeed_qna.entity;
 
-import com.sparta.newsfeed_qna.dto.UserSignupRequestDTO;
+import com.sparta.newsfeed_qna.dto.UserSignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    public User(UserSignupRequestDTO userSignupRequestDTO){
+    public User(UserSignupRequestDto userSignupRequestDTO){
         this.userName = userSignupRequestDTO.getUserName();
         this.password = userSignupRequestDTO.getPassword();
         this.email = userSignupRequestDTO.getEmail();
