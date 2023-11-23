@@ -1,5 +1,6 @@
 package com.sparta.newsfeed_qna.entity;
 
+import com.sparta.newsfeed_qna.dto.UserSignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,15 +17,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String username;
+    @Column(name = "user_name", nullable = false, unique = true)
+    private String userName;
 
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String email;
 
-    public User(String username, String password){
-        this.username = username;
-        this.password = password;
+    public User(UserSignupRequestDto userSignupRequestDTO){
+        this.userName = userSignupRequestDTO.getUserName();
+        this.password = userSignupRequestDTO.getPassword();
+        this.email = userSignupRequestDTO.getEmail();
     }
+
+//    public User(String username, String password, String email) {
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//    }
 }
+
