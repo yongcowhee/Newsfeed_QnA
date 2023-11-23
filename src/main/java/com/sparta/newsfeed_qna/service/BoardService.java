@@ -35,8 +35,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).orElseThrow(()
                 -> new IllegalArgumentException("선택한 게시글은 존재하지 않습니다.")
         );
-        return new BoardResponseDto(board.getBoardId(), board.getBoardTitle(),
-                board.getBoardContent(), board.getCreatedAt(), board.getModifiedAt());
+        return new BoardResponseDto(board);
     }
 
     // 게시글 수정 API
@@ -44,10 +43,9 @@ public class BoardService {
     public BoardResponseDto modifyBoard(Long boardId, BoardRequestDto boardRequestDto, User user) {
         // 해당 게시글이 db에 존재하는지 확인, 영속성 컨텍스트 1차 캐시 저장
         Board board = findBoard(boardId); // boardRepository에서 Board 조회
-        if(board.getUser().getId().equals(user.getId())){ // 인가받은 user와 repository에 저장된 board의 user가 같은지 확인
+        if(board.getUser().getUserId().equals(user.getUserId())){ // 인가받은 user와 repository에 저장된 board의 user가 같은지 확인
             board.update(boardRequestDto);
-            return new BoardResponseDto(board.getBoardId(), board.getBoardTitle(),
-                    board.getBoardContent(), board.getCreatedAt(), board.getModifiedAt());
+            return new BoardResponseDto(board);
         } else{
             throw new IllegalArgumentException("해당 게시글의 작성자만 글을 수정할 수 있습니다.");
         }
@@ -56,7 +54,7 @@ public class BoardService {
     // 게시글 삭제 API
     public void deleteBoard(Long boardId, User user) {
         Board board = findBoard(boardId);
-        if(board.getUser().getId() == user.getId()){
+        if(board.getUser().getUserId() == user.getUserId()){
             boardRepository.delete(board);
         } else {
 

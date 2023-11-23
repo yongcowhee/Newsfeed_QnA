@@ -1,6 +1,8 @@
 package com.sparta.newsfeed_qna.entity;
 
+import com.sparta.newsfeed_qna.dto.CommentCreateRequestDto;
 import com.sparta.newsfeed_qna.dto.CommentRequestDto;
+import com.sparta.newsfeed_qna.dto.CommentResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,17 +12,14 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Comment {
+public class Comment extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long commentId;
 
     @Column
     private String text;
-
-    @Column
-    private LocalDateTime createDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -30,23 +29,13 @@ public class Comment {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    // 연관관계 메서드
-    public void setUser(User user) {
+    public Comment(CommentCreateRequestDto dto, User user, Board board) {
+        this.board = board;
+        this.text = dto.getText();
         this.user = user;
     }
 
-    public Comment(CommentRequestDto dto) {
-        this.text = dto.getText();
-        this.createDate = LocalDateTime.now();
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-        board.getCommentList().add(this);
-    }
-
-    // 서비스 메서드
-    public void setText(String text) {
-        this.text = text;
+    public void update(CommentRequestDto commentRequestDto) {
+        this.text = commentRequestDto.getText();
     }
 }

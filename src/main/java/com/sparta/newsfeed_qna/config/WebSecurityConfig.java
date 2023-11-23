@@ -5,7 +5,6 @@ import com.sparta.newsfeed_qna.security.JwtAuthenticationFilter;
 import com.sparta.newsfeed_qna.security.JwtAuthorizationFilter;
 import com.sparta.newsfeed_qna.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,7 +36,7 @@ public class WebSecurityConfig {
                 );
 
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                .requestMatchers("/signup", "/api/user/login", "/api/boards").permitAll()
+                .requestMatchers("/signup", "/api/user/login", "boards/comments").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/boards/**").permitAll()
                 .anyRequest().authenticated()
         );

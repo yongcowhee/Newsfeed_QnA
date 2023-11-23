@@ -11,21 +11,16 @@ import java.time.LocalDateTime;
 public class BoardResponseDto {
 
     private Long boardId;
+    private String boardAuthor;
     private String boardTitle;
     private String boardContent;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
-    public BoardResponseDto(Long id, String boardTitle, String boardContent, LocalDateTime createAt, LocalDateTime modifiedAt) {
-        this.boardId = id;
-        this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
-        this.createAt = createAt;
-        this.modifiedAt = modifiedAt;
-    }
 
     public BoardResponseDto(Board board) {
         this.boardId = board.getBoardId();
+        this.boardAuthor = board.getUser().getUserName();
         this.boardTitle = board.getBoardTitle();
         this.boardContent = board.getBoardContent();
         this.createAt = board.getCreatedAt();
