@@ -18,9 +18,9 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     // Header KEY 값
-    public static final String AUTHORIZATION_HEADER = "Autorization";
+    public static final String AUTHORIZATION_HEADER = "Authorization";
     // Token 식별자
-    public static final String BEARER_PREFIX = "Baarer ";
+    public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
 
@@ -49,6 +49,8 @@ public class JwtUtil {
 
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        System.out.println("bearerToken = " + bearerToken);
+
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)){
             return bearerToken.substring(7);
         }

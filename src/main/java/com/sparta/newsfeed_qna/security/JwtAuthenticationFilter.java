@@ -56,7 +56,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         PrintWriter writer = response.getWriter();
 
         writer.println(json);
-        writer.println("{" + token + "}");
+        //writer.println("{" + token + "}");
     }
 
     @Override

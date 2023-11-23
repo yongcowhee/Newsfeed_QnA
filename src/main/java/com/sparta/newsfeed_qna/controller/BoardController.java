@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/board")
+@RequestMapping("/api/boards")
 @RequiredArgsConstructor
 public class BoardController {
 
@@ -34,7 +34,7 @@ public class BoardController {
 
     // 선택한 게시글 조회 API
     @GetMapping("/{boardId}")
-    public Board viewBoard(@PathVariable Long boardId){
+    public BoardResponseDto viewBoard(@PathVariable Long boardId){
         return boardService.selectBoard(boardId);
     }
 

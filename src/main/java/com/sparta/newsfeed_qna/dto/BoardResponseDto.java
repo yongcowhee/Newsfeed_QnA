@@ -10,14 +10,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BoardResponseDto {
 
-    private Long id;
+    private Long boardId;
     private String boardTitle;
     private String boardContent;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
     public BoardResponseDto(Long id, String boardTitle, String boardContent, LocalDateTime createAt, LocalDateTime modifiedAt) {
-        this.id = id;
+        this.boardId = id;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.createAt = createAt;
@@ -25,7 +25,7 @@ public class BoardResponseDto {
     }
 
     public BoardResponseDto(Board board) {
-        this.id = board.getBoardId();
+        this.boardId = board.getBoardId();
         this.boardTitle = board.getBoardTitle();
         this.boardContent = board.getBoardContent();
         this.createAt = board.getCreatedAt();
