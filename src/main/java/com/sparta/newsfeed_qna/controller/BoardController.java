@@ -5,9 +5,11 @@ import com.sparta.newsfeed_qna.dto.BoardResponseDto;
 import com.sparta.newsfeed_qna.entity.Board;
 import com.sparta.newsfeed_qna.security.UserDetailsImpl;
 import com.sparta.newsfeed_qna.service.BoardService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -20,10 +22,12 @@ public class BoardController {
 
     //게시글 작성 API
     @PostMapping
-    public BoardResponseDto createBoard(@RequestBody BoardRequestDto boardRequestDto,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public RedirectView createBoard(@RequestBody BoardRequestDto boardRequestDto,
+                                    @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
         boardService.createBoard(boardRequestDto, userDetails.getUser());
-        return null;
+        response.setHeader("Location", "api/board");
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        return new RedirectView("/api/board");
     }
 
     // 전체 게시글 조회 API
@@ -40,14 +44,19 @@ public class BoardController {
 
     // 게시글 수정 API
     @PatchMapping("/{boardId}")
-    public BoardResponseDto modifyBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto,
-                            @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return boardService.modifyBoard(boardId, boardRequestDto, userDetails.getUser());
+    public RedirectView modifyBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto,
+                                    @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
+        boardService.modifyBoard(boardId, boardRequestDto, userDetails.getUser());
+        response.setHeader("Location","/api/board/" + boardId);
+        return new RedirectView("/api/board/" + boardId);
     }
 
     // 게시글 삭제 API
     @DeleteMapping("/{boardId}")
-    public void deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public RedirectView deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
         boardService.deleteBoard(boardId, userDetails.getUser());
+        response.setHeader("Location", "/api/board");
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        return new RedirectView("/api/board");
     }
 }

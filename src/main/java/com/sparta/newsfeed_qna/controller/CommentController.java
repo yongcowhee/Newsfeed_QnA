@@ -3,8 +3,10 @@ package com.sparta.newsfeed_qna.controller;
 import com.sparta.newsfeed_qna.dto.CommentRequestDto;
 import com.sparta.newsfeed_qna.dto.CommentResponseDto;
 import com.sparta.newsfeed_qna.service.CommentService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -21,8 +23,11 @@ public class CommentController {
 
     // 댓글 생성
     @PostMapping
-    public CommentResponseDto createComment(@RequestBody CommentRequestDto requestDto) {
-        return commentService.createComment(requestDto);
+    public RedirectView createComment(@RequestBody CommentRequestDto requestDto, HttpServletResponse response) {
+        CommentResponseDto commentResponseDto = commentService.createComment(requestDto);
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        response.setHeader("Location", "/comments");
+        return new RedirectView("/comments"); // 댓글 목록 페이지 또는 댓글이 추가된 페이지로 리다이렉트
     }
 
     // 모든 댓글 조회
@@ -33,8 +38,11 @@ public class CommentController {
 
     // 댓글 수정
     @PatchMapping("/{commentId}")
-    public CommentResponseDto editComment(@PathVariable Long commentId, @RequestBody CommentRequestDto requestDto) {
-        return commentService.editComment(commentId, requestDto);
+    public RedirectView editComment(@PathVariable Long commentId, @RequestBody CommentRequestDto requestDto, HttpServletResponse response) {
+        CommentResponseDto commentResponseDto = commentService.editComment(commentId, requestDto);
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        response.setHeader("Location", "/comments/" + commentId);
+        return new RedirectView("/comments/" + commentId); // 수정된 댓글이 있는 페이지로 리다이렉트
     }
 
     // 댓글 삭제
