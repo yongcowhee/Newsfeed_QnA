@@ -30,7 +30,7 @@ public class WebSecurityConfig {
         http.csrf((csrf) -> csrf.disable());
 
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                .requestMatchers("/signup", "/api/user/login").permitAll()
+                .requestMatchers("/signup", "/api/user/login", "/api/board").permitAll()
                 .anyRequest().authenticated()
         );
 

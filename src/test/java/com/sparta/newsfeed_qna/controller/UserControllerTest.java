@@ -56,7 +56,7 @@ class UserControllerTest {
     @Test
     void login() throws Exception {
         var request = new LoginRequestDto();
-        request.setUsername("용소희");
+        request.setUserName("용소희");
         request.setPassword("1234");
         saveUser("용소희", "1234", "test@spa.com");
 

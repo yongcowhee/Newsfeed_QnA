@@ -31,9 +31,10 @@ public class Board extends Timestamped {
     private List<Comment> commentList;
 
     // 게시글 작성
-    public Board(BoardRequestDto boardRequestDto) {
+    public Board(BoardRequestDto boardRequestDto, User user) {
         this.boardTitle = boardRequestDto.getBoardTitle();
         this.boardContent = boardRequestDto.getBoardContent();
+        this.user = user;
     }
 
     public void update(BoardRequestDto boardRequestDto) {

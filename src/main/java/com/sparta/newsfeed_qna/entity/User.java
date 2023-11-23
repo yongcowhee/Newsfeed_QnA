@@ -1,5 +1,6 @@
 package com.sparta.newsfeed_qna.entity;
 
+import com.sparta.newsfeed_qna.dto.UserSignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_name", nullable = false)
+    @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
 
     @Column(nullable = false)
