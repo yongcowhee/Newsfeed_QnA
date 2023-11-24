@@ -27,7 +27,7 @@ public class Board extends Timestamped {
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToMany(mappedBy = "board")
+    @OneToMany(mappedBy = "board", cascade=CascadeType.REMOVE)
     private List<Comment> commentList;
 
     // 게시글 작성
