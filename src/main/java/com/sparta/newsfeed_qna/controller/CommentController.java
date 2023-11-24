@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/boards/comments")
+@RequestMapping("/api/comments")
 public class CommentController {
 
     private final CommentService commentService;
@@ -32,10 +33,10 @@ public class CommentController {
 
     }
 
-    // 모든 댓글 조회
-    @GetMapping
-    public List<CommentResponseDto> getAllComments() {
-        return commentService.getAllComments();
+    //  board별 모든 댓글 조회
+    @GetMapping("/{boardId}")
+    public List<CommentResponseDto> getAllComments(@PathVariable Long boardId) {
+        return commentService.getAllComments(boardId);
     }
 
     // 댓글 수정
@@ -44,9 +45,8 @@ public class CommentController {
                                           @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
         commentService.editComment(boardId, requestDto, userDetails.getUser());
         response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-        response.setHeader("Location", "/comments/" + commentId);
-        return new RedirectView("/comments/" + commentId); // 수정된 댓글이 있는 페이지로 리다이렉트
-
+        response.setHeader("Location", "/comments/");
+        return new RedirectView("/comments/"); // 수정된 댓글이 있는 페이지로 리다이렉트
     }
 
     // 댓글 삭제

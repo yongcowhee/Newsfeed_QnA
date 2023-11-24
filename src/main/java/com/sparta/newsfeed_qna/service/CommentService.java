@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,10 +37,20 @@ public class CommentService {
     }
 
     // 댓글 목록 조회
-    public List<CommentResponseDto> getAllComments() {
-        return commentRepository.findAll().stream()
-                .map(CommentResponseDto::new)
-                .collect(Collectors.toList());
+    public List<CommentResponseDto> getAllComments(Long boardId) {
+        List<Comment> findCommentList = commentRepository.findAll();
+        List<Comment> boardCommentList = new ArrayList<>();
+        for (Comment c : findCommentList) {
+            if (c.getBoard().getBoardId().equals(boardId)) {
+                boardCommentList.add(c);
+            }
+        }
+
+        return boardCommentList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        // return commentRepository.findAll()
+        //        .stream()
+        //        .map(CommentResponseDto::new)
+        //        .collect(Collectors.toList());
     }
 
     // 댓글 수정
@@ -58,10 +69,10 @@ public class CommentService {
             }
         }
         // comment의 userId와 userDetails의 userId가 같으면 update
-        if(findComment.getUser().getUserId().equals(user.getUserId())){
+        if (findComment.getUser().getUserId().equals(user.getUserId())) {
             findComment.update(requestDto);
             commentRepository.save(findComment); // 명시적 flush
-        } else{
+        } else {
             throw new IllegalArgumentException("댓글 작성자만 댓글을 수정할 수 있습니다.");
         }
         return new CommentResponseDto(findComment);
@@ -70,9 +81,9 @@ public class CommentService {
     // 댓글 삭제
     @Transactional
     public void removeComment(Long commentId, User user) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()->
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new NullPointerException("해당 댓글이 존재하지 않습니다."));
-        if(comment.getUser().getUserId().equals(user.getUserId())){
+        if (comment.getUser().getUserId().equals(user.getUserId())) {
             commentRepository.delete(comment);
         } else {
             throw new IllegalArgumentException("댓글 작성자만 댓글을 삭제할 수 있습니다.");
