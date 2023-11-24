@@ -45,7 +45,7 @@ public class BoardController {
     // 게시글 수정 API
     @PatchMapping("/{boardId}")
     public RedirectView modifyBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto,
-                                    @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
+                            @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
         boardService.modifyBoard(boardId, boardRequestDto, userDetails.getUser());
         response.setHeader("Location","/api/board/" + boardId);
         return new RedirectView("/api/board/" + boardId);
