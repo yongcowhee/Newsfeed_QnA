@@ -2,15 +2,14 @@ package com.sparta.newsfeed_qna.controller;
 
 import com.sparta.newsfeed_qna.dto.BoardRequestDto;
 import com.sparta.newsfeed_qna.dto.BoardResponseDto;
-import com.sparta.newsfeed_qna.entity.Board;
 import com.sparta.newsfeed_qna.security.UserDetailsImpl;
 import com.sparta.newsfeed_qna.service.BoardService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -22,12 +21,15 @@ public class BoardController {
 
     //게시글 작성 API
     @PostMapping
-    public RedirectView createBoard(@RequestBody BoardRequestDto boardRequestDto,
+    public void createBoard(@RequestBody BoardRequestDto boardRequestDto,
                                     @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
         boardService.createBoard(boardRequestDto, userDetails.getUser());
-        response.setHeader("Location", "api/board");
-        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-        return new RedirectView("/api/board");
+        String apiUrl = "/api/boards";
+        try {
+            response.sendRedirect(apiUrl);
+        } catch (IOException e) {
+            throw new NullPointerException("유효하지 않은 uri");
+        }
     }
 
     // 전체 게시글 조회 API
@@ -44,19 +46,25 @@ public class BoardController {
 
     // 게시글 수정 API
     @PatchMapping("/{boardId}")
-    public RedirectView modifyBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto,
-                                    @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
+    public void modifyBoard(@PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto,
+                            @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
         boardService.modifyBoard(boardId, boardRequestDto, userDetails.getUser());
-        response.setHeader("Location","/api/board/" + boardId);
-        return new RedirectView("/api/board/" + boardId);
+        String apiUrl = "/api/boards/" + boardId;
+        try {
+            response.sendRedirect(apiUrl);
+        } catch (IOException e) {
+            throw new NullPointerException("유효하지 않은 uri 입니다.");
+        }
     }
 
-    // 게시글 삭제 API
     @DeleteMapping("/{boardId}")
-    public RedirectView deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
+    public void deleteBoard(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
         boardService.deleteBoard(boardId, userDetails.getUser());
-        response.setHeader("Location", "/api/board");
-        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-        return new RedirectView("/api/board");
+        String apiUrl = "/api/boards";
+        try {
+            response.sendRedirect(apiUrl);
+        } catch (Exception e) {
+            throw new NullPointerException("유효하지 않은 uri 입니다.");
+        }
     }
 }
