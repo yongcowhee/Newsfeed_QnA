@@ -8,13 +8,14 @@ import com.sparta.newsfeed_qna.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/boards/comments")
+@RequestMapping("/api/comments")
 public class CommentController {
 
     private final CommentService commentService;
@@ -26,10 +27,10 @@ public class CommentController {
         return commentService.createComment(boardId, requestDto, userDetails.getUser());
     }
 
-    // 모든 댓글 조회
-    @GetMapping
-    public List<CommentResponseDto> getAllComments() {
-        return commentService.getAllComments();
+    //  board별 모든 댓글 조회
+    @GetMapping("/{boardId}")
+    public List<CommentResponseDto> getAllComments(@PathVariable Long boardId) {
+        return commentService.getAllComments(boardId);
     }
 
     // 댓글 수정
