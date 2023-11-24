@@ -45,9 +45,8 @@ public class CommentController {
                                           @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
         commentService.editComment(boardId, requestDto, userDetails.getUser());
         response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
-        response.setHeader("Location", "/comments/" + commentId);
-        return new RedirectView("/comments/" + commentId); // 수정된 댓글이 있는 페이지로 리다이렉트
-
+        response.setHeader("Location", "/comments/");
+        return new RedirectView("/comments/"); // 수정된 댓글이 있는 페이지로 리다이렉트
     }
 
     // 댓글 삭제
