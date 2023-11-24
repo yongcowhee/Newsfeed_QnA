@@ -6,10 +6,12 @@ import com.sparta.newsfeed_qna.dto.CommentResponseDto;
 import com.sparta.newsfeed_qna.security.UserDetailsImpl;
 import com.sparta.newsfeed_qna.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
 
@@ -22,9 +24,13 @@ public class CommentController {
 
     // 댓글 생성
     @PostMapping("/{boardId}")
-    public CommentResponseDto createComment(@PathVariable Long boardId, @RequestBody CommentCreateRequestDto requestDto,
-                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.createComment(boardId, requestDto, userDetails.getUser());
+    public RedirectView createComment(@PathVariable Long boardId, @RequestBody CommentCreateRequestDto requestDto,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
+        commentService.createComment(boardId, requestDto, userDetails.getUser());
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        response.setHeader("Location", "/comments");
+        return new RedirectView("/comments"); // 댓글 목록 페이지 또는 댓글이 추가된 페이지로 리다이렉트
+
     }
 
     //  board별 모든 댓글 조회
@@ -35,9 +41,13 @@ public class CommentController {
 
     // 댓글 수정
     @PatchMapping("/{boardId}")
-    public CommentResponseDto editComment(@PathVariable Long boardId, @RequestBody CommentRequestDto requestDto,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.editComment(boardId, requestDto, userDetails.getUser());
+    public RedirectView editComment(@PathVariable Long boardId, @RequestBody CommentRequestDto requestDto,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
+        commentService.editComment(boardId, requestDto, userDetails.getUser());
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        response.setHeader("Location", "/comments/" + commentId);
+        return new RedirectView("/comments/" + commentId); // 수정된 댓글이 있는 페이지로 리다이렉트
+
     }
 
     // 댓글 삭제
