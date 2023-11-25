@@ -1,5 +1,6 @@
 package com.sparta.newsfeed_qna.entity;
 
+import com.sparta.newsfeed_qna.dto.UserProfileModifyRequestDto;
 import com.sparta.newsfeed_qna.dto.UserSignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,16 +27,20 @@ public class User {
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
+    private String userNickname;
+    @Column(nullable = false)
+    private String oneLiner; // 한줄 소개
+
     public User(UserSignupRequestDto userSignupRequestDTO){
         this.userName = userSignupRequestDTO.getUserName();
         this.password = userSignupRequestDTO.getPassword();
         this.email = userSignupRequestDTO.getEmail();
     }
 
-//    public User(String username, String password, String email) {
-//        this.username = username;
-//        this.password = password;
-//        this.email = email;
-//    }
+    public void profileUpdate(UserProfileModifyRequestDto userProfileModifyRequestDto){
+        this.userNickname = userProfileModifyRequestDto.getUserNickName();
+        this.oneLiner = userProfileModifyRequestDto.getUserOneLiner();
+    }
 }
 
