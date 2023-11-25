@@ -6,6 +6,7 @@ import com.sparta.newsfeed_qna.dto.CommentResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -29,6 +30,11 @@ public class Comment extends Timestamped{
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Long heartCount;
+
+
     public Comment(CommentCreateRequestDto dto, User user, Board board) {
         this.board = board;
         this.text = dto.getText();
@@ -37,5 +43,13 @@ public class Comment extends Timestamped{
 
     public void update(CommentRequestDto commentRequestDto) {
         this.text = commentRequestDto.getText();
+    }
+
+    public void plusLike(){
+        this.heartCount += 1;
+    }
+
+    public void minusLike(){
+        this.heartCount -= 1;
     }
 }
