@@ -2,6 +2,7 @@ package com.sparta.newsfeed_qna.entity;
 
 import com.sparta.newsfeed_qna.dto.BoardRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,8 +11,8 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Board extends Timestamped {
 
     @Id
@@ -41,4 +42,6 @@ public class Board extends Timestamped {
         this.boardTitle = boardRequestDto.getBoardTitle();
         this.boardContent = boardRequestDto.getBoardContent();
     }
+
+
 }

@@ -64,10 +64,12 @@ public class CommentService {
             if (c.getCommentId().equals(requestDto.getCommentId())) {
                 findComment = c;
                 break;
-            } else {
-                throw new NullPointerException("해당 댓글이 존재하지 않습니다.");
             }
         }
+        if(findComment == null){
+                throw new NullPointerException("해당 댓글이 존재하지 않습니다.");
+        }
+
         // comment의 userId와 userDetails의 userId가 같으면 update
         if (findComment.getUser().getUserId().equals(user.getUserId())) {
             findComment.update(requestDto);
