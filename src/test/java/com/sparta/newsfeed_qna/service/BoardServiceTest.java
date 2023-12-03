@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,9 +131,80 @@ class BoardServiceTest {
 
 
 
+    @Nested
     @DisplayName("게시글 수정")
-    @Test
-    void modifyBoard() {
+    class modifyBoard{
+        @DisplayName("성공")
+        @Test
+        void modifyBoardSuccess() {
+            // given
+            User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+
+            Board board = new Board(1L, "게시글 수정", "게시글 수정 테스트 중입니다.", user,null);
+            BoardRequestDto boardRequestDto = new BoardRequestDto();
+            boardRequestDto.setBoardTitle("수정 테스트");
+            boardRequestDto.setBoardContent("수정 수정!");
+
+            when(boardRepository.findById(any())).thenReturn(Optional.of(board));
+
+            // when
+            boardService.modifyBoard(board.getBoardId(), boardRequestDto, user);
+
+            // then
+            assertEquals("수정 테스트", board.getBoardTitle());
+            assertEquals("수정 수정!", board.getBoardContent());
+            assertEquals(1L, board.getUser().getUserId());
+            assertNull(board.getCreatedAt());
+            assertNull(board.getModifiedAt());
+        }
+
+        @DisplayName("게시글 조회 실패")
+        @Test
+        void modifyBoardFailNotFoundBoard(){
+            // given
+            User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+
+            Board board = new Board(2L, "게시글 수정", "게시글 수정 테스트 중입니다.", user,null);
+            BoardRequestDto boardRequestDto = new BoardRequestDto();
+            boardRequestDto.setBoardTitle("수정 테스트");
+            boardRequestDto.setBoardContent("수정 수정!");
+
+            when(boardRepository.findById(2L)).thenThrow(new IllegalArgumentException("선택한 게시글은 존재하지 않습니다."));
+
+            // when
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                    () -> boardService.modifyBoard(board.getBoardId(), boardRequestDto, user));
+
+            // then
+            assertEquals("선택한 게시글은 존재하지 않습니다.", e.getMessage());
+        }
+
+        @DisplayName("유저 불일치 실패")
+        @Test
+        void modifyBoardFailNotEqualUser(){
+            // given
+            User boardAuthor = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+            User user = new User(2L, "다른 사람", "1234", "louis@gmail.com", "루이야",
+                    "눈나 자고시퍼");
+
+            Board board = new Board(1L, "게시글 수정", "게시글 수정 테스트 중입니다.", boardAuthor,null);
+
+            BoardRequestDto boardRequestDto = new BoardRequestDto();
+            boardRequestDto.setBoardTitle("수정 테스트");
+            boardRequestDto.setBoardContent("수정 수정!");
+
+            when(boardRepository.findById(any())).thenReturn(Optional.of(board));
+
+            // when
+            AccessDeniedException e = assertThrows(AccessDeniedException.class,
+                    () -> boardService.modifyBoard(board.getBoardId(), boardRequestDto, user));
+
+            // then
+            assertEquals("해당 게시글의 작성자만 글을 수정할 수 있습니다.", e.getMessage());
+        }
     }
 
 
