@@ -10,6 +10,7 @@ import com.sparta.newsfeed_qna.repository.BoardRepository;
 import com.sparta.newsfeed_qna.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,9 +58,9 @@ public class CommentService {
     @Transactional
     public CommentResponseDto editComment(Long boardId, CommentRequestDto requestDto, User user) {
         Board board = boardRepository.findById(boardId).orElseThrow(() ->
-                new NullPointerException("존재하지 않는 게시물 입니다."));
+                new IllegalArgumentException("존재하지 않는 게시물 입니다."));
 
-        Comment findComment = new Comment();
+        Comment findComment = null;
         for (Comment c : board.getCommentList()) {
             if (c.getCommentId().equals(requestDto.getCommentId())) {
                 findComment = c;
@@ -67,7 +68,7 @@ public class CommentService {
             }
         }
         if(findComment == null){
-                throw new NullPointerException("해당 댓글이 존재하지 않습니다.");
+                throw new IllegalArgumentException("해당 댓글이 존재하지 않습니다.");
         }
 
         // comment의 userId와 userDetails의 userId가 같으면 update
@@ -75,7 +76,7 @@ public class CommentService {
             findComment.update(requestDto);
             commentRepository.save(findComment); // 명시적 flush
         } else {
-            throw new IllegalArgumentException("댓글 작성자만 댓글을 수정할 수 있습니다.");
+            throw new AccessDeniedException("댓글 작성자만 댓글을 수정할 수 있습니다.");
         }
         return new CommentResponseDto(findComment);
     }

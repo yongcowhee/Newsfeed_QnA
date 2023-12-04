@@ -230,51 +230,51 @@ class BoardServiceTest {
             verify(boardRepository, times(1)).delete(any());
 
         }
-    }
 
-    @DisplayName("게시글 조회 실패")
-    @Test
-    void deleteBoardFail_NotFoundBoard() {
-        User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
-                "아리곤듀 == 언니 딸");
+        @DisplayName("게시글 조회 실패")
+        @Test
+        void deleteBoardFail_NotFoundBoard() {
+            User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
 
-        Board board = new Board(2L, "게시글 삭제", "게시글 삭제 테스트 중입니다.", user, null);
-        BoardRequestDto boardRequestDto = new BoardRequestDto();
-        boardRequestDto.setBoardTitle("삭제 테스트");
-        boardRequestDto.setBoardContent("삭제 삭제!");
+            Board board = new Board(2L, "게시글 삭제", "게시글 삭제 테스트 중입니다.", user, null);
+            BoardRequestDto boardRequestDto = new BoardRequestDto();
+            boardRequestDto.setBoardTitle("삭제 테스트");
+            boardRequestDto.setBoardContent("삭제 삭제!");
 
-        when(boardRepository.findById(2L)).thenThrow(new IllegalArgumentException("선택한 게시글은 존재하지 않습니다."));
+            when(boardRepository.findById(2L)).thenThrow(new IllegalArgumentException("선택한 게시글은 존재하지 않습니다."));
 
-        // when
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-                () -> boardService.modifyBoard(board.getBoardId(), boardRequestDto, user));
+            // when
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                    () -> boardService.modifyBoard(board.getBoardId(), boardRequestDto, user));
 
-        // then
-        assertEquals("선택한 게시글은 존재하지 않습니다.", e.getMessage());
-    }
+            // then
+            assertEquals("선택한 게시글은 존재하지 않습니다.", e.getMessage());
+        }
 
-    @DisplayName("유저 불일치 실패")
-    @Test
-    void deleteBoardFail_NotEqualUser() {
-        // given
-        User boardAuthor = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
-                "아리곤듀 == 언니 딸");
-        User user = new User(2L, "다른 사람", "1234", "louis@gmail.com", "루이야",
-                "눈나 자고시퍼");
+        @DisplayName("유저 불일치 실패")
+        @Test
+        void deleteBoardFail_NotEqualUser() {
+            // given
+            User boardAuthor = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+            User user = new User(2L, "다른 사람", "1234", "louis@gmail.com", "루이야",
+                    "눈나 자고시퍼");
 
-        Board board = new Board(1L, "게시글 수정", "게시글 수정 테스트 중입니다.", boardAuthor, null);
+            Board board = new Board(1L, "게시글 수정", "게시글 수정 테스트 중입니다.", boardAuthor, null);
 
-        BoardRequestDto boardRequestDto = new BoardRequestDto();
-        boardRequestDto.setBoardTitle("수정 테스트");
-        boardRequestDto.setBoardContent("수정 수정!");
+            BoardRequestDto boardRequestDto = new BoardRequestDto();
+            boardRequestDto.setBoardTitle("수정 테스트");
+            boardRequestDto.setBoardContent("수정 수정!");
 
-        when(boardRepository.findById(any())).thenReturn(Optional.of(board));
+            when(boardRepository.findById(any())).thenReturn(Optional.of(board));
 
-        // when
-        AccessDeniedException e = assertThrows(AccessDeniedException.class,
-                () -> boardService.deleteBoard(board.getBoardId(), user));
+            // when
+            AccessDeniedException e = assertThrows(AccessDeniedException.class,
+                    () -> boardService.deleteBoard(board.getBoardId(), user));
 
-        // then
-        assertEquals("해당 게시글의 작성자만 글을 삭제할 수 있습니다.", e.getMessage());
+            // then
+            assertEquals("해당 게시글의 작성자만 글을 삭제할 수 있습니다.", e.getMessage());
+        }
     }
 }

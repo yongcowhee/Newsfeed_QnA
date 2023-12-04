@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,8 +29,8 @@ public class Board extends Timestamped {
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToMany(mappedBy = "board", cascade=CascadeType.REMOVE)
-    private List<Comment> commentList;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList = new ArrayList<>();
 
     // 게시글 작성
     public Board(BoardRequestDto boardRequestDto, User user) {
@@ -43,5 +44,10 @@ public class Board extends Timestamped {
         this.boardContent = boardRequestDto.getBoardContent();
     }
 
-
+    public Board(Long boardId, String boardTitle, String boardContent, User user) {
+        this.boardId = boardId;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        this.user = user;
+    }
 }
