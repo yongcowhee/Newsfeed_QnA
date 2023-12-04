@@ -69,9 +69,9 @@ class UserControllerTest {
                         jsonPath("$.message").value("로그인에 성공했습니다."),
                         jsonPath("$.status").value("200")
                 );
-}
+    }
 
-    private User saveUser(String username, String password, String email){
+    private User saveUser(String username, String password, String email) {
         var signup = new UserSignupRequestDto();
         signup.setUserName(username);
         signup.setPassword(passwordEncoder.encode(password));

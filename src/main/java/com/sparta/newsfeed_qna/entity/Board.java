@@ -2,16 +2,18 @@ package com.sparta.newsfeed_qna.entity;
 
 import com.sparta.newsfeed_qna.dto.BoardRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Board extends Timestamped {
 
     @Id
@@ -27,8 +29,8 @@ public class Board extends Timestamped {
     @JoinColumn(name = "user_id")
     User user;
 
-    @OneToMany(mappedBy = "board", cascade=CascadeType.REMOVE)
-    private List<Comment> commentList;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList = new ArrayList<>();
 
     // 게시글 작성
     public Board(BoardRequestDto boardRequestDto, User user) {
@@ -40,5 +42,12 @@ public class Board extends Timestamped {
     public void update(BoardRequestDto boardRequestDto) {
         this.boardTitle = boardRequestDto.getBoardTitle();
         this.boardContent = boardRequestDto.getBoardContent();
+    }
+
+    public Board(Long boardId, String boardTitle, String boardContent, User user) {
+        this.boardId = boardId;
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        this.user = user;
     }
 }

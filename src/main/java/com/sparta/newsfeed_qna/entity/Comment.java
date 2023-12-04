@@ -4,6 +4,7 @@ import com.sparta.newsfeed_qna.dto.CommentCreateRequestDto;
 import com.sparta.newsfeed_qna.dto.CommentRequestDto;
 import com.sparta.newsfeed_qna.dto.CommentResponseDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Comment extends Timestamped{
 
     @Id

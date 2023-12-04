@@ -7,6 +7,7 @@ import com.sparta.newsfeed_qna.entity.User;
 import com.sparta.newsfeed_qna.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +48,7 @@ public class BoardService {
             board.update(boardRequestDto);
             return new BoardResponseDto(board);
         } else{
-            throw new IllegalArgumentException("해당 게시글의 작성자만 글을 수정할 수 있습니다.");
+            throw new AccessDeniedException("해당 게시글의 작성자만 글을 수정할 수 있습니다.");
         }
     }
 
@@ -57,7 +58,7 @@ public class BoardService {
         if(board.getUser().getUserId() == user.getUserId()){
             boardRepository.delete(board);
         } else {
-
+            throw new AccessDeniedException("해당 게시글의 작성자만 글을 삭제할 수 있습니다.");
         }
     }
 

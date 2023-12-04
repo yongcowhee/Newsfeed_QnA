@@ -3,13 +3,14 @@ package com.sparta.newsfeed_qna.entity;
 import com.sparta.newsfeed_qna.dto.UserProfileModifyRequestDto;
 import com.sparta.newsfeed_qna.dto.UserSignupRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @Entity
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
 public class User {
