@@ -25,13 +25,11 @@ public class CommentController {
 
     // 댓글 생성
     @PostMapping("/{boardId}")
-    public void createComment(@PathVariable Long boardId, @RequestBody CommentCreateRequestDto requestDto,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response) {
-        commentService.createComment(boardId, requestDto, userDetails.getUser());
-        String apiUri = "/api/comments/" + boardId;
+    public Object createComment(@PathVariable Long boardId, @RequestBody CommentCreateRequestDto requestDto,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            response.sendRedirect(apiUri);
-        } catch (IOException e) {
+            return commentService.createComment(boardId, requestDto, userDetails.getUser());
+        } catch (RuntimeException e) {
             throw new NullPointerException("유효하지 않은 uri입니다.");
         }
     }
