@@ -9,7 +9,6 @@ import com.sparta.newsfeed_qna.entity.Comment;
 import com.sparta.newsfeed_qna.entity.User;
 import com.sparta.newsfeed_qna.repository.BoardRepository;
 import com.sparta.newsfeed_qna.repository.CommentRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -117,7 +116,7 @@ class CommentServiceTest {
 
     @Nested
     @DisplayName("댓글 수정")
-    class editComment{
+    class editComment {
         @Test
         @DisplayName("성공")
         void editComment() {
@@ -140,8 +139,8 @@ class CommentServiceTest {
         }
 
         @Test
-        @DisplayName("게시글 조회 실패")
-        void editCommentFail_NotFoundBoard(){
+        @DisplayName("실패 - 존재하지 않는 게시글")
+        void editCommentFail_NotFoundBoard() {
             // given
             CommentRequestDto commentRequestDto = new CommentRequestDto(1L, "댓글 수정해주세요 이걸로");
             User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
@@ -151,15 +150,15 @@ class CommentServiceTest {
 
             // when
             IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
-                    () ->commentService.editComment(1L, commentRequestDto, user));
+                    () -> commentService.editComment(1L, commentRequestDto, user));
 
             // then
             assertEquals("존재하지 않는 게시물 입니다.", e.getMessage());
         }
 
         @Test
-        @DisplayName("작성자 불일치")
-        void editCommentFail_NotEqualUser(){
+        @DisplayName("실패 - 작성자 불일치")
+        void editCommentFail_NotEqualUser() {
             // given
             CommentRequestDto commentRequestDto = new CommentRequestDto(1L, "댓글 수정해주세요 이걸로");
             User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
@@ -175,7 +174,7 @@ class CommentServiceTest {
             when(boardRepository.findById(any())).thenReturn(Optional.of(board));
 
             // when
-            AccessDeniedException e = assertThrows(AccessDeniedException.class, ()->
+            AccessDeniedException e = assertThrows(AccessDeniedException.class, () ->
                     commentService.editComment(2L, commentRequestDto, dUser));
 
             // then
@@ -183,8 +182,8 @@ class CommentServiceTest {
         }
 
         @Test
-        @DisplayName("존재하지 않는 댓글")
-        void editCommentFail_NotFoundComment(){
+        @DisplayName("실패 - 존재하지 않는 댓글")
+        void editCommentFail_NotFoundComment() {
             // given
             CommentRequestDto commentRequestDto = new CommentRequestDto(1L, "댓글 수정해주세요 이걸로");
             User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
@@ -197,8 +196,8 @@ class CommentServiceTest {
             when(boardRepository.findById(any())).thenReturn(Optional.of(board));
 
             // when
-            IllegalArgumentException e = assertThrows(IllegalArgumentException.class, ()->
-                    commentService.editComment(2L,commentRequestDto, user));
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                    commentService.editComment(2L, commentRequestDto, user));
 
             // then
             assertEquals("해당 댓글이 존재하지 않습니다.", e.getMessage());
@@ -206,7 +205,119 @@ class CommentServiceTest {
     }
 
 
-    @Test
-    void removeComment() {
+    @Nested
+    @DisplayName("댓글 삭제")
+    class removeComment {
+        @Test
+        @DisplayName("성공")
+        void removeCommentSuccess() {
+            // given
+            User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+
+            Board board = new Board(2L, "댓글 삭제", "댓글 삭제 테스트 중입니다.", user, new ArrayList<>());
+            Comment comment = new Comment(1L, "댓글", user, board);
+
+            board.getCommentList().add(comment);
+
+            when(boardRepository.findById(any())).thenReturn(Optional.of(board));
+            when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
+
+            // when
+            commentService.removeComment(board.getBoardId(), comment.getCommentId(), user);
+
+            // then
+            verify(commentRepository, times(1)).delete(any());
+        }
+
+        @Test
+        @DisplayName("실패 - 게시글 조회 실패")
+        void removeCommentFail_NotFoundBoard() {
+            // given
+            CommentRequestDto commentRequestDto = new CommentRequestDto(1L, "댓글 수정해주세요 이걸로");
+            User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+
+            when(boardRepository.findById(any())).thenThrow(new IllegalArgumentException("존재하지 않는 게시물 입니다."));
+
+            // when
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                    () -> commentService.editComment(1L, commentRequestDto, user));
+
+            // then
+            assertEquals("존재하지 않는 게시물 입니다.", e.getMessage());
+        }
+
+        @Test
+        @DisplayName("실패 - 댓글 조회 실패")
+        void removeCommentFail_NotFoundComment() {
+            // given
+            CommentRequestDto commentRequestDto = new CommentRequestDto(1L, "댓글 수정해주세요 이걸로");
+            User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+            Board board = new Board(2L, "게시글 삭제", "게시글 삭제 테스트 중입니다.", user, new ArrayList<>());
+            Comment comment = new Comment(2L, "댓글", user, board);
+
+            board.getCommentList().add(comment);
+
+            when(boardRepository.findById(any())).thenReturn(Optional.of(board));
+
+            // when
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                    commentService.editComment(2L, commentRequestDto, user));
+
+            // then
+            assertEquals("해당 댓글이 존재하지 않습니다.", e.getMessage());
+        }
+
+        @Test
+        @DisplayName("실패 - 작성자 불일치")
+        void removeCommentFail_NotEqualUser() {
+            // given
+            User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+            User dUser = new User(2L, "용루이", "1234", "louis@gmail.com",
+                    "용루이 1세", "용루이가 세상을 지배한다.");
+
+            Board board = new Board(2L, "게시글 삭제", "게시글 삭제 테스트 중입니다.", user, new ArrayList<>());
+            Comment comment = new Comment(1L, "댓글", user, board);
+
+            board.getCommentList().add(comment);
+
+            when(boardRepository.findById(any())).thenReturn(Optional.of(board));
+            when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
+
+            // when
+            AccessDeniedException e = assertThrows(AccessDeniedException.class, () ->
+                    commentService.removeComment(board.getBoardId(), comment.getCommentId(), dUser));
+
+            // then
+            assertEquals("댓글 작성자만 댓글을 삭제할 수 있습니다.", e.getMessage());
+        }
+
+        @Test
+        @DisplayName("실패 - Board에 없는 댓글")
+        void removeCommentFail_NotExistComment() {
+            // given
+            CommentRequestDto commentRequestDto = new CommentRequestDto(1L, "댓글 수정해주세요 이걸로");
+            User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+
+            Board dBoard = new Board(1L, "댓글 없는 게시글", "NotExistComment", user, new ArrayList<>());
+            Board board = new Board(2L, "게시글 삭제", "게시글 삭제 테스트 중입니다.", user, new ArrayList<>());
+
+            Comment comment = new Comment(2L, "댓글", user, board);
+            board.getCommentList().add(comment);
+
+            when(boardRepository.findById(any())).thenReturn(Optional.of(dBoard));
+            when(commentRepository.findById(any())).thenReturn(Optional.of(comment));
+
+            // when
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                    commentService.removeComment(1L, 2L, user));
+
+            // then
+            assertEquals("선택한 게시글에 해당 댓글이 존재하지 않습니다.", e.getMessage());
+        }
     }
 }

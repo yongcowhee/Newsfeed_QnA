@@ -88,16 +88,16 @@ public class CommentService {
                 new IllegalArgumentException("존재하지 않는 게시물 입니다."));
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
-                new NullPointerException("해당 댓글이 존재하지 않습니다."));
+                new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
 
         if(board.getCommentList().contains(comment)){
             if (comment.getUser().getUserId().equals(user.getUserId())) {
                 commentRepository.delete(comment);
             } else {
-                throw new IllegalArgumentException("댓글 작성자만 댓글을 삭제할 수 있습니다.");
+                throw new AccessDeniedException("댓글 작성자만 댓글을 삭제할 수 있습니다.");
             }
         } else{
-            throw new NullPointerException("해당 댓글이 존재하지 않습니다.");
+            throw new IllegalArgumentException("선택한 게시글에 해당 댓글이 존재하지 않습니다.");
         }
     }
 }
