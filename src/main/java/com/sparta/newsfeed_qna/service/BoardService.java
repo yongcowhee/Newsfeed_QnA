@@ -58,7 +58,7 @@ public class BoardService {
         if(board.getUser().getUserId() == user.getUserId()){
             boardRepository.delete(board);
         } else {
-
+            throw new AccessDeniedException("해당 게시글의 작성자만 글을 삭제할 수 있습니다.");
         }
     }
 

@@ -6,7 +6,6 @@ import com.sparta.newsfeed_qna.dto.UserSignupRequestDto;
 import com.sparta.newsfeed_qna.entity.Board;
 import com.sparta.newsfeed_qna.entity.User;
 import com.sparta.newsfeed_qna.repository.BoardRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -96,7 +95,7 @@ class BoardServiceTest {
 
             User user = new User(userSignupRequestDto);
 
-            Board board = new Board(1L, "게시글 선택 조회", "게시글 선택 조회 테스트 중입니다.", user,null);
+            Board board = new Board(1L, "게시글 선택 조회", "게시글 선택 조회 테스트 중입니다.", user, null);
 
             when(boardRepository.findById(any())).thenReturn(Optional.of(board));
 
@@ -114,7 +113,7 @@ class BoardServiceTest {
 
         @Test
         @DisplayName("실패")
-        void selectBoardFail(){
+        void selectBoardFail() {
             // given
             Long boardId = 1L;
 
@@ -130,10 +129,9 @@ class BoardServiceTest {
     }
 
 
-
     @Nested
     @DisplayName("게시글 수정")
-    class modifyBoard{
+    class modifyBoard {
         @DisplayName("성공")
         @Test
         void modifyBoardSuccess() {
@@ -141,7 +139,7 @@ class BoardServiceTest {
             User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
                     "아리곤듀 == 언니 딸");
 
-            Board board = new Board(1L, "게시글 수정", "게시글 수정 테스트 중입니다.", user,null);
+            Board board = new Board(1L, "게시글 수정", "게시글 수정 테스트 중입니다.", user, null);
             BoardRequestDto boardRequestDto = new BoardRequestDto();
             boardRequestDto.setBoardTitle("수정 테스트");
             boardRequestDto.setBoardContent("수정 수정!");
@@ -161,12 +159,12 @@ class BoardServiceTest {
 
         @DisplayName("게시글 조회 실패")
         @Test
-        void modifyBoardFailNotFoundBoard(){
+        void modifyBoardFailNotFoundBoard() {
             // given
             User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
                     "아리곤듀 == 언니 딸");
 
-            Board board = new Board(2L, "게시글 수정", "게시글 수정 테스트 중입니다.", user,null);
+            Board board = new Board(2L, "게시글 수정", "게시글 수정 테스트 중입니다.", user, null);
             BoardRequestDto boardRequestDto = new BoardRequestDto();
             boardRequestDto.setBoardTitle("수정 테스트");
             boardRequestDto.setBoardContent("수정 수정!");
@@ -183,14 +181,14 @@ class BoardServiceTest {
 
         @DisplayName("유저 불일치 실패")
         @Test
-        void modifyBoardFailNotEqualUser(){
+        void modifyBoardFailNotEqualUser() {
             // given
             User boardAuthor = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
                     "아리곤듀 == 언니 딸");
             User user = new User(2L, "다른 사람", "1234", "louis@gmail.com", "루이야",
                     "눈나 자고시퍼");
 
-            Board board = new Board(1L, "게시글 수정", "게시글 수정 테스트 중입니다.", boardAuthor,null);
+            Board board = new Board(1L, "게시글 수정", "게시글 수정 테스트 중입니다.", boardAuthor, null);
 
             BoardRequestDto boardRequestDto = new BoardRequestDto();
             boardRequestDto.setBoardTitle("수정 테스트");
@@ -209,7 +207,74 @@ class BoardServiceTest {
 
 
     @DisplayName("게시글 삭제")
+    @Nested
+    class deleteBoard {
+        @DisplayName("성공")
+        @Test
+        void deleteBoardSuccess() {
+            // given
+            User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                    "아리곤듀 == 언니 딸");
+
+            Board board = new Board(2L, "게시글 삭제", "게시글 삭제 테스트 중입니다.", user, null);
+            BoardRequestDto boardRequestDto = new BoardRequestDto();
+            boardRequestDto.setBoardTitle("수정 테스트");
+            boardRequestDto.setBoardContent("수정 수정!");
+
+            when(boardRepository.findById(any())).thenReturn(Optional.of(board));
+
+            // when
+            boardService.deleteBoard(board.getBoardId(), user);
+
+            // then
+            verify(boardRepository, times(1)).delete(any());
+
+        }
+    }
+
+    @DisplayName("게시글 조회 실패")
     @Test
-    void deleteBoard() {
+    void deleteBoardFail_NotFoundBoard() {
+        User user = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                "아리곤듀 == 언니 딸");
+
+        Board board = new Board(2L, "게시글 삭제", "게시글 삭제 테스트 중입니다.", user, null);
+        BoardRequestDto boardRequestDto = new BoardRequestDto();
+        boardRequestDto.setBoardTitle("삭제 테스트");
+        boardRequestDto.setBoardContent("삭제 삭제!");
+
+        when(boardRepository.findById(2L)).thenThrow(new IllegalArgumentException("선택한 게시글은 존재하지 않습니다."));
+
+        // when
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> boardService.modifyBoard(board.getBoardId(), boardRequestDto, user));
+
+        // then
+        assertEquals("선택한 게시글은 존재하지 않습니다.", e.getMessage());
+    }
+
+    @DisplayName("유저 불일치 실패")
+    @Test
+    void deleteBoardFail_NotEqualUser() {
+        // given
+        User boardAuthor = new User(1L, "용소희", "1234", "ari@gmail.com", "아리곤듀",
+                "아리곤듀 == 언니 딸");
+        User user = new User(2L, "다른 사람", "1234", "louis@gmail.com", "루이야",
+                "눈나 자고시퍼");
+
+        Board board = new Board(1L, "게시글 수정", "게시글 수정 테스트 중입니다.", boardAuthor, null);
+
+        BoardRequestDto boardRequestDto = new BoardRequestDto();
+        boardRequestDto.setBoardTitle("수정 테스트");
+        boardRequestDto.setBoardContent("수정 수정!");
+
+        when(boardRepository.findById(any())).thenReturn(Optional.of(board));
+
+        // when
+        AccessDeniedException e = assertThrows(AccessDeniedException.class,
+                () -> boardService.deleteBoard(board.getBoardId(), user));
+
+        // then
+        assertEquals("해당 게시글의 작성자만 글을 삭제할 수 있습니다.", e.getMessage());
     }
 }
