@@ -3,6 +3,8 @@ package com.sparta.newsfeed_qna.entity;
 import com.sparta.newsfeed_qna.dto.UserProfileModifyRequestDto;
 import com.sparta.newsfeed_qna.dto.UserSignupRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +30,7 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String userNickname;
     @Column(nullable = false)
     private String oneLiner; // 한줄 소개
@@ -37,6 +39,7 @@ public class User {
         this.userName = userSignupRequestDTO.getUserName();
         this.password = userSignupRequestDTO.getPassword();
         this.email = userSignupRequestDTO.getEmail();
+        this.userNickname = userSignupRequestDTO.getUserNickname();
     }
 
     public void profileUpdate(UserProfileModifyRequestDto userProfileModifyRequestDto){

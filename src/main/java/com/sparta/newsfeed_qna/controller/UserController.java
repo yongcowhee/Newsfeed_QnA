@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping
 public class UserController {
+
     private final UserService userService;
 
     public UserController(UserService userService) {
@@ -20,14 +21,21 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signupUser(@RequestBody UserSignupRequestDto userSignupRequestDTO) {
-        userService.signupNewUserAccount(userSignupRequestDTO);
+    public ResponseEntity<?> signupUser(@RequestBody @Valid UserSignupRequestDto userSignupRequestDTO) {
+        try {
+            userService.signupNewUserAccount(userSignupRequestDTO);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+        }
         return ResponseEntity.ok(new MessageDto("사용자가 성공적으로 등록되었습니다."));
     }
 
     @PatchMapping("/api/users/profile")
-    public ResponseEntity<?> editUserProfile(@RequestBody UserProfileModifyRequestDto userProfileModifyRequestDto,
-                                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<?> editUserProfile(
+        @RequestBody UserProfileModifyRequestDto userProfileModifyRequestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.editUserProfile(userProfileModifyRequestDto, userDetails.getUser());
         return ResponseEntity.ok(new MessageDto("사용자 프로필을 수정하였습니다."));
     }
