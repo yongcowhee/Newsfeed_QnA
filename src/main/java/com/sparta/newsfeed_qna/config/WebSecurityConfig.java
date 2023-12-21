@@ -38,7 +38,7 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                 .requestMatchers("/signup", "/api/user/login", "/api/comments").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/boards/**", "/api/comments/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
         );
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

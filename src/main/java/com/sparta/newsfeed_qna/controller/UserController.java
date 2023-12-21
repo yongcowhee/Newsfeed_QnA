@@ -6,6 +6,8 @@ import com.sparta.newsfeed_qna.dto.UserProfileModifyResponseDto;
 import com.sparta.newsfeed_qna.dto.UserSignupRequestDto;
 import com.sparta.newsfeed_qna.security.UserDetailsImpl;
 import com.sparta.newsfeed_qna.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

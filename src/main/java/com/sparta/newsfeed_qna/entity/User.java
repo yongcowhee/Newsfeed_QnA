@@ -32,7 +32,7 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String userNickname;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String oneLiner; // 한줄 소개
 
     public User(UserSignupRequestDto userSignupRequestDTO){
