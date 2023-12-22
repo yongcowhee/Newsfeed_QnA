@@ -6,6 +6,7 @@ import com.sparta.newsfeed_qna.dto.PageDto;
 import com.sparta.newsfeed_qna.security.UserDetailsImpl;
 import com.sparta.newsfeed_qna.service.BoardService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,7 +24,7 @@ public class BoardController {
 
     //게시글 작성 API
     @PostMapping
-    public void createBoard(@RequestBody BoardRequestDto boardRequestDto,
+    public void createBoard(@RequestBody @Valid BoardRequestDto boardRequestDto,
                                     @AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response){
         boardService.createBoard(boardRequestDto, userDetails.getUser());
         String apiUrl = "/api/boards";
