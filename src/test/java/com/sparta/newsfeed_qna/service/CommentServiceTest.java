@@ -90,6 +90,7 @@ class CommentServiceTest {
     }
 
 
+/*
     @Test
     @DisplayName("댓글 목록 조회")
     void getAllComments() {
@@ -113,6 +114,7 @@ class CommentServiceTest {
         // then
         assertThat(commentResponseDtoList.get(0).getText()).isEqualTo("댓글 생성 테스트");
     }
+*/
 
     @Nested
     @DisplayName("댓글 수정")

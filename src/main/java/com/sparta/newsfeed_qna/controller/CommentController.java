@@ -3,6 +3,7 @@ package com.sparta.newsfeed_qna.controller;
 import com.sparta.newsfeed_qna.dto.CommentCreateRequestDto;
 import com.sparta.newsfeed_qna.dto.CommentRequestDto;
 import com.sparta.newsfeed_qna.dto.CommentResponseDto;
+import com.sparta.newsfeed_qna.dto.PageDto;
 import com.sparta.newsfeed_qna.security.UserDetailsImpl;
 import com.sparta.newsfeed_qna.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,8 @@ public class CommentController {
 
     //  board별 모든 댓글 조회
     @GetMapping("/{boardId}")
-    public List<CommentResponseDto> getAllComments(@PathVariable Long boardId) {
-        return commentService.getAllComments(boardId);
+    public List<CommentResponseDto> getAllComments(@PathVariable Long boardId, PageDto pageDto) {
+        return commentService.getAllComments(boardId, pageDto.toPageable());
     }
 
     // 댓글 수정

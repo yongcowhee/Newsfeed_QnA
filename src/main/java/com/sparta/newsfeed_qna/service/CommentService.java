@@ -10,6 +10,7 @@ import com.sparta.newsfeed_qna.repository.BoardRepository;
 import com.sparta.newsfeed_qna.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,16 +39,10 @@ public class CommentService {
     }
 
     // 댓글 목록 조회
-    public List<CommentResponseDto> getAllComments(Long boardId) {
-        List<Comment> findCommentList = commentRepository.findAll();
-        List<Comment> boardCommentList = new ArrayList<>();
-        for (Comment c : findCommentList) {
-            if (c.getBoard().getBoardId().equals(boardId)) {
-                boardCommentList.add(c);
-            }
-        }
+    public List<CommentResponseDto> getAllComments(Long boardId, Pageable pageable) {
+        List<Comment> findCommentList = commentRepository.findAllByBoard_BoardId(boardId, pageable);
 
-        return boardCommentList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
+        return findCommentList.stream().map(CommentResponseDto::new).collect(Collectors.toList());
         // return commentRepository.findAll()
         //        .stream()
         //        .map(CommentResponseDto::new)
