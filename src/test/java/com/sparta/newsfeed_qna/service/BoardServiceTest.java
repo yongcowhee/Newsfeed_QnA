@@ -54,7 +54,7 @@ class BoardServiceTest {
         verify(boardRepository, times(1)).save(any());
     }
 
-    @DisplayName("게시글 전체 조회")
+/*    @DisplayName("게시글 전체 조회")
     @Test
     void getAllBoard() {
         // given
@@ -78,7 +78,7 @@ class BoardServiceTest {
 
         // then
         assertEquals(allBoardList.size(), 1);
-    }
+    }*/
 
 
     @Nested

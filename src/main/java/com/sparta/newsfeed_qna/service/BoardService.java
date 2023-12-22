@@ -5,7 +5,9 @@ import com.sparta.newsfeed_qna.dto.BoardResponseDto;
 import com.sparta.newsfeed_qna.entity.Board;
 import com.sparta.newsfeed_qna.entity.User;
 import com.sparta.newsfeed_qna.repository.BoardRepository;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -26,9 +28,10 @@ public class BoardService {
     }
 
     // 게시글 전체 조회 API
-    public List<BoardResponseDto> getAllBoard() {
-        // 작성일 기준 내림차순 Sort.by 사용
-        return boardRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).stream().map(BoardResponseDto::new).toList();
+    public List<BoardResponseDto> getAllBoard(Pageable pageable) {
+        return boardRepository.findAllBy(pageable).
+            stream().map(BoardResponseDto::new)
+            .collect(Collectors.toList());
     }
 
     // 게시글 선택 조회 API

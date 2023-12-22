@@ -2,10 +2,12 @@ package com.sparta.newsfeed_qna.controller;
 
 import com.sparta.newsfeed_qna.dto.BoardRequestDto;
 import com.sparta.newsfeed_qna.dto.BoardResponseDto;
+import com.sparta.newsfeed_qna.dto.PageDto;
 import com.sparta.newsfeed_qna.security.UserDetailsImpl;
 import com.sparta.newsfeed_qna.service.BoardService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,8 +36,8 @@ public class BoardController {
 
     // 전체 게시글 조회 API
     @GetMapping
-    public List<BoardResponseDto> viewAllBoard(){
-        return boardService.getAllBoard();
+    public List<BoardResponseDto> viewAllBoard(PageDto pageDto){
+        return boardService.getAllBoard(pageDto.toPageable());
     }
 
     // 선택한 게시글 조회 API
